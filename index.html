@@ -218,9 +218,8 @@ const $ = id => document.getElementById(id);
 const norm = s => (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const esc = s => (s || "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const anioNum = y => { const m = /\d{4}/.exec(y || ""); return m ? +m[0] : null; };
-// Materia principal: 'Telescopios - congresos' -> 'Telescopios'; 'Estrellas-órbitas binarias' -> 'Estrellas'.
+// Materias detalladas (m, separadas por ';') y, en paralelo, sus grupos generales (g) para el desplegable.
 const materias = m => (m || "").split(";").map(x => x.trim()).filter(Boolean);
-const principal = x => x.split(/\s*-\s*/)[0].trim();
 
 const libros = window.CATALOGO.libros.map((l, i) => ({
   ...l,
@@ -228,6 +227,7 @@ const libros = window.CATALOGO.libros.map((l, i) => ({
   n: anioNum(l.y),
   area: (AREAS.find(a => a[2](l.s)) || [""])[0],
   mats: materias(l.m),
+  grupos: new Set((l.g || []).flat()),
   busca: norm([l.s, l.e, l.a, l.t, l.p, l.y, l.m].join(" ")),
 }));
 
@@ -242,7 +242,7 @@ $("areas").innerHTML = [["", "Todas", () => true], ...AREAS]
   }).join("");
 
 const cuentaMat = new Map();
-libros.forEach(l => new Set(l.mats.map(principal)).forEach(m => cuentaMat.set(m, (cuentaMat.get(m) || 0) + 1)));
+libros.forEach(l => l.grupos.forEach(m => cuentaMat.set(m, (cuentaMat.get(m) || 0) + 1)));
 [...cuentaMat].sort((a, b) => a[0].localeCompare(b[0], "es"))
   .forEach(([m, n]) => $("materia").insertAdjacentHTML("beforeend", `<option value="${esc(m)}">${esc(m)} (${n})</option>`));
 
@@ -254,7 +254,7 @@ function filtrar() {
   const palabras = norm(estado.q).split(/\s+/).filter(Boolean);
   return libros.filter(l =>
     (!estado.area || l.area === estado.area) &&
-    (!estado.materia || l.mats.some(m => principal(m) === estado.materia)) &&
+    (!estado.materia || l.grupos.has(estado.materia)) &&
     (estado.desde == null || (l.n != null && l.n >= estado.desde)) &&
     (estado.hasta == null || (l.n != null && l.n <= estado.hasta)) &&
     palabras.every(p => l.busca.includes(p)));
@@ -280,7 +280,7 @@ function tarjeta(l) {
     ${pub ? `<p class="pub">${pub}</p>` : ""}
     <div class="donde"><span class="sig">${esc(l.s)}</span><span class="est">Estantería ${esc(l.e)}</span></div>
     <div class="pie">
-      ${l.mats.map(m => `<button type="button" class="chip" data-materia="${esc(principal(m))}">${esc(m)}</button>`).join("")}
+      ${l.mats.map((m, k) => `<button type="button" class="chip" data-materia="${esc(((l.g || [])[k] || [])[0] || "")}" title="Ver: ${esc(((l.g || [])[k] || [])[0] || "")}">${esc(m)}</button>`).join("")}
       <a class="prestamo" href="mailto:${CONTACTO}?subject=${asunto}&body=${cuerpo}">Solicitar consulta →</a>
     </div>
   </li>`;
@@ -345,7 +345,7 @@ $("hasta").addEventListener("input", e => { estado.hasta = anio(e.target.value);
 $("orden").addEventListener("change", e => { estado.orden = e.target.value; reiniciar(); });
 $("mas").addEventListener("click", () => { estado.mostrados += POR_PAGINA; pintar(); });
 $("lista").addEventListener("click", e => {
-  const c = e.target.closest(".chip"); if (!c) return;
+  const c = e.target.closest(".chip"); if (!c || !c.dataset.materia) return;
   estado.materia = c.dataset.materia; $("materia").value = estado.materia; reiniciar();
   window.scrollTo({ top: $("resumen").offsetTop - 20, behavior: "smooth" });
 });
