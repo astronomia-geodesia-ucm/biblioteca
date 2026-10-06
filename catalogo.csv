@@ -1,6 +1,5 @@
 ﻿Signatura,Estantería,Autor,Título,Editorial,Año,Materias
 "1.1 (vols. a, b)",A1,"Ambronn, L.",Handbuch der astronomischen Instrumentenkunde,Berlín : Verlag von Julius Springer,1899,Astronomía-instrumentos
-1.1.68,A1,"IAU Symposium (16º. 1961. Cloudcroft, New Mexico)","The solar corona : proceedings of International Astronomical Union Symposium No. 16 held at Cloudcroft, New Mexico, U.S.A., 28-30 August 1961",New York and London : Academic Press,1963,Sol - Corona; Sol - Congresos
 1.2,A1,,How to find the Stars and Planets,Cincinnati : Authority of the Board of Directors of the University,1920,Estrellas; Planetas
 1.4,A1,"Carrasco Garrorena, R.",El cálculo de Orbitas parabólicas. Cometa 1924 (Finsler). Memoria,"Madrid : Universidad Central, Facultad de Ciencias",1926,Órbitas
 1.5,A1,"Gil Montaner, Fernando",L'astrolabe á Prisme dans les Travaux Geodesiques et Astronomiques de l'institut Geographique et Cadastral d'Espagne,Madrid : Ateliers de l'institut Geophisique et Cadastral,1930,Astrolabio
@@ -202,6 +201,7 @@
 1.436,B3,Jornadas Científicas 250 Años de Astronomía en España (2003),Jornadas Científicas 250 años de Astronomía en España,[San Fernando] : Centro de Ayudas a la Enseñanza de la Armada,2003,Astronomía - España - Historia; Astronomía - Congresos
 1.437,B3,"Gómez de Castro, Ana I. ; Verdugo, Eva (eds.)",El proyecto Observatorio Espacial Mundial Ultravioleta - España = The World Space Observatory Ultraviolet (WSO/UV) project - Spain,[Madrid] : Editorial Complutense,2005,Astronomía ultravioleta; Observatorios espaciales
 1.438,B3,"Gómez de Castro, Ana I. ; Wamsteker, Willem (eds.)",Fundamental questions in astrophysics : guidelines for future UV observatories,[Dordrecht] : Springer,2006,Astrofísica; Astronomía ultravioleta; Observatorios espaciales
+2.44,C1,"Bruins, G. J. (ed.)","Standard base ""Loenermark"" : report on the results of the measurements performed by T. J. Kukkamäki and T. Honkasalo of the Finnish Geodetic Institute",Delft : Rijkscommissie voor Geodesie,1964,Bases geodésicas - Medición; Distanciometría electrónica
 2.58,C1,"Domínguez García-Tejero, Francisco",Topografía general y aplicada. Quinta edición,Madrid : Editorial Dossat,1968,Topografía
 2.59,C1,"Miguel, Luis de",Geomagnetismo,Madrid : Instituto Geográfico Nacional,1974,Geomagnetismo
 2.60,C1,"Miguel, Luis de",Geomagnetismo,Madrid : Instituto Geográfico Nacional,1974,Geomagnetismo
@@ -446,6 +446,7 @@
 1.1.65,P2-2,IAU Symposium (13º. 1960. Helsinki),"The future of the International Latitude Service : held in Helsinki, July 1960 in conjunction with the International Association of Geodesy",,1961,Latitud - Variaciones - Congresos; Polo - Movimiento
 1.1.66,P2-2,IAU Symposium (14º. 1960. Púlkovo),"The moon : Symposium no. 14 of the International Astronomical Union held at Pulkovo Observatory near Leningrad, December 1960",London and New York : Academic Press,1962,Luna - Congresos
 1.1.67,P2-2,IAU Symposium (15º. 1961. Santa Bárbara),"Problems of extra-galactic research : I.A.U. Symposium no. 15, August 10-12, 1961",New York ; London : The Macmillan Company ; Collier-Macmillan,1962,Galaxias - Congresos; Cosmología
+1.1.68,P2-2,"IAU Symposium (16º. 1961. Cloudcroft, New Mexico)","The solar corona : proceedings of International Astronomical Union Symposium No. 16 held at Cloudcroft, New Mexico, U.S.A., 28-30 August 1961",New York and London : Academic Press,1963,Sol - Corona; Sol - Congresos
 1.1.69,P2-2,IAU Symposium (17º. 1961. Berkeley),"Visual double stars : held in Berkeley, August 11-12, 1961 with financial support from the National Science Foundation",,1962,Estrellas dobles - Congresos
 1.1.70,P2-2,IAU Symposium (18º. 1962. París),"Theoretical interpretation of upper atmosphere emissions : held in Paris, 25th-29th June 1962 jointly with the International Union of Geodesy and Geophysics",New York ; Oxford ; London ; Paris : Pergamon Press,1963,Atmósfera superior - Congresos; Aeronomía
 1.1.71,P2-2,Symposium de l'Union Astronomique Internationale (19º. 1962. Roma),Le choix des sites d'observatoires astronomiques (site testing) : tenu à Rome (Italie) du 1er au 6 octobre 1962 avec le concours financier du Consiglio Nazionale delle Ricerche,,1963,Observatorios astronómicos - Emplazamiento - Congresos
