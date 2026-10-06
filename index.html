@@ -73,8 +73,18 @@
   .buscador input:focus { outline: 3px solid var(--acento); }
   .buscador svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #7a8196; }
 
+  /* Libros / Revistas */
+  .vistas { display: flex; gap: 4px; margin: 22px 0 0; border-bottom: 1px solid var(--linea); }
+  .vista {
+    font: inherit; font-weight: 600; font-size: 15px; background: none; border: 0; cursor: pointer;
+    color: var(--suave); padding: 8px 14px 10px; border-bottom: 3px solid transparent; margin-bottom: -1px;
+  }
+  .vista span { font-weight: 400; font-size: 13px; margin-left: 4px; }
+  .vista[aria-selected="true"] { color: var(--texto); border-bottom-color: var(--acento); }
+  [hidden] { display: none !important; }
+
   /* Filtros */
-  .filtros { margin: 20px 0 8px; display: grid; gap: 12px; }
+  .filtros { margin: 16px 0 8px; display: grid; gap: 12px; }
   .areas { display: flex; flex-wrap: wrap; gap: 8px; }
   .area {
     border: 1px solid var(--linea); background: var(--tarjeta); color: var(--texto);
@@ -103,6 +113,7 @@
   /* Resultados */
   .resumen { margin: 14px 0 12px; color: var(--suave); font-size: 14px; }
   .resumen b { color: var(--texto); }
+  .resumen a { color: var(--enlace); }
   ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
   .libro {
     background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px;
@@ -134,6 +145,11 @@
   }
   .mas[hidden] { display: none; }
   .libro h2, .autor, .pub { overflow-wrap: anywhere; }
+  .fondos { margin: 4px 0 0; grid-column: 1; }
+  .fondos b { font-weight: 600; }
+  .detalle { margin: 0; grid-column: 1; color: var(--suave); font-size: 13.5px; overflow-wrap: anywhere; }
+  .tipo { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--acento); }
+  .revista .est { max-width: 190px; }
   footer { margin: 40px 0 0; padding: 20px 0 32px; border-top: 1px solid var(--linea); color: var(--suave); font-size: 13px; }
   footer a { color: var(--enlace); }
 
@@ -150,8 +166,8 @@
   <div class="wrap">
     <p class="sup">Sección Departamental de Astronomía y Geodesia · UCM</p>
     <h1>Catálogo de la Biblioteca</h1>
-    <p class="intro">Busque por autor, título, editorial, año o materia. Todos los libros están disponibles
-      para consulta. Si está interesado, escriba un correo a <a href="mailto:secaig@ucm.es">secaig@ucm.es</a>.</p>
+    <p class="intro">Busque por autor, título, editorial, año o materia. Todos los libros y revistas están
+      disponibles para consulta. Si está interesado, escriba un correo a <a href="mailto:secaig@ucm.es">secaig@ucm.es</a>.</p>
     <div class="buscador">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="q" type="search" placeholder="Ej.: geodesia, Torroja, Fortran, 1965…" autocomplete="off" aria-label="Buscar en el catálogo">
@@ -160,6 +176,10 @@
 </header>
 
 <main class="wrap">
+  <div class="vistas" id="vistas" role="tablist" aria-label="Tipo de documento">
+    <button type="button" class="vista" role="tab" data-vista="libros" aria-selected="true">Libros<span id="n-libros"></span></button>
+    <button type="button" class="vista" role="tab" data-vista="revistas" aria-selected="false">Revistas<span id="n-revistas"></span></button>
+  </div>
   <section class="filtros" aria-label="Filtros">
     <div class="areas" id="areas" role="group" aria-label="Área"></div>
     <div class="fila">
@@ -173,7 +193,7 @@
           <input id="hasta" type="number" inputmode="numeric" placeholder="hasta" aria-label="Año hasta">
         </div>
       </div>
-      <label class="campo">Ordenar por
+      <label class="campo" id="campo-orden">Ordenar por
         <select id="orden">
           <option value="estante">Signatura</option>
           <option value="nuevo">Año (más recientes)</option>
@@ -194,11 +214,12 @@
 <footer>
   <div class="wrap">
     <span id="actualizado"></span> ·
-    <a href="catalogo.csv" download>Descargar el catálogo completo (CSV)</a>
+    <a href="catalogo.csv" download>Descargar el catálogo de libros (CSV)</a> ·
+    <a href="revistas.csv" download>Descargar las revistas (CSV)</a>
   </div>
 </footer>
 
-<script src="datos.js?v=00c9ec7bf7"></script>
+<script src="datos.js?v=0f7913f04f"></script>
 <script>
 // ---- Configuración ---------------------------------------------------------
 const CONTACTO = "secaig@ucm.es";          // correo para solicitar consultas
@@ -230,8 +251,19 @@ const libros = window.CATALOGO.libros.map((l, i) => ({
   grupos: new Set((l.g || []).flat()),
   busca: norm([l.s, l.e, l.a, l.t, l.p, l.y, l.m].join(" ")),
 }));
+// Revistas: una ficha por título; r = años que hay como rangos [desde, hasta] (filtro de años).
+const revistas = (window.CATALOGO.revistas || []).map((r, i) => ({
+  ...r,
+  i,
+  rangos: r.r || [],
+  mats: materias(r.m),
+  grupos: new Set((r.g || []).flat()),
+  busca: norm([r.t, r.x, r.p, r.c, r.f, r.n, r.o, r.e, r.m].join(" ")),
+}));
+const coleccion = (v = estado.vista) => v === "revistas" ? revistas : libros;
+const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
 
-const estado = { q: "", area: "", materia: "", desde: null, hasta: null, orden: "estante", mostrados: POR_PAGINA };
+const estado = { vista: "libros", q: "", area: "", materia: "", desde: null, hasta: null, orden: "estante", mostrados: POR_PAGINA };
 
 // --- Construir filtros ---
 function contar(f) { return libros.filter(f).length; }
@@ -240,23 +272,38 @@ $("areas").innerHTML = [["", "Todas", () => true], ...AREAS]
     const n = contar(l => f(l.s));
     return n ? `<button type="button" class="area" data-area="${k}" aria-pressed="${k === ""}">${nombre}<span>${n}</span></button>` : "";
   }).join("");
+$("n-libros").textContent = libros.length;
+$("n-revistas").textContent = revistas.length;
 
-const cuentaMat = new Map();
-libros.forEach(l => l.grupos.forEach(m => cuentaMat.set(m, (cuentaMat.get(m) || 0) + 1)));
-[...cuentaMat].sort((a, b) => a[0].localeCompare(b[0], "es"))
-  .forEach(([m, n]) => $("materia").insertAdjacentHTML("beforeend", `<option value="${esc(m)}">${esc(m)} (${n})</option>`));
+// Desplegable de materias: los grupos de la colección que se está viendo.
+function llenarMaterias() {
+  const cuenta = new Map();
+  coleccion().forEach(l => l.grupos.forEach(m => cuenta.set(m, (cuenta.get(m) || 0) + 1)));
+  if (estado.materia && !cuenta.has(estado.materia)) cuenta.set(estado.materia, 0);
+  $("materia").innerHTML = `<option value="">Todas</option>` + [...cuenta]
+    .sort((a, b) => a[0].localeCompare(b[0], "es"))
+    .map(([m, n]) => `<option value="${esc(m)}">${esc(m)} (${n})</option>`).join("");
+  $("materia").value = estado.materia;
+}
 
 $("actualizado").textContent =
-  `${libros.length} libros · actualizado el ${new Date(window.CATALOGO.actualizado + "T12:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`;
+  `${plural(libros.length, "libro", "libros")} y ${plural(revistas.length, "revista", "revistas")} · actualizado el ${new Date(window.CATALOGO.actualizado + "T12:00").toLocaleDateString("es-ES", { day: "numeric", month: "long", year: "numeric" })}`;
 
 // --- Filtrar, ordenar, pintar ---
-function filtrar() {
+// Años: un libro entra si su año está en el intervalo; una revista, si tiene algún año del intervalo.
+const enAnios = (l, v) => v === "revistas"
+  ? (estado.desde == null && estado.hasta == null) ||
+    l.rangos.some(([a, b]) => (estado.desde == null || b >= estado.desde) && (estado.hasta == null || a <= estado.hasta))
+  : (estado.desde == null || (l.n != null && l.n >= estado.desde)) &&
+    (estado.hasta == null || (l.n != null && l.n <= estado.hasta));
+
+function filtrar(v = estado.vista) {
   const palabras = norm(estado.q).split(/\s+/).filter(Boolean);
-  return libros.filter(l =>
-    (!estado.area || l.area === estado.area) &&
+  const porArea = v === "libros" && estado.area;
+  return coleccion(v).filter(l =>
+    (!porArea || l.area === estado.area) &&
     (!estado.materia || l.grupos.has(estado.materia)) &&
-    (estado.desde == null || (l.n != null && l.n >= estado.desde)) &&
-    (estado.hasta == null || (l.n != null && l.n <= estado.hasta)) &&
+    enAnios(l, v) &&
     palabras.every(p => l.busca.includes(p)));
 }
 
@@ -269,6 +316,8 @@ const ORDENES = {
   titulo: cmpTexto("t"),
 };
 
+const chips = l => l.mats.map((m, k) => `<button type="button" class="chip" data-materia="${esc(((l.g || [])[k] || [])[0] || "")}" title="Ver: ${esc(((l.g || [])[k] || [])[0] || "")}">${esc(m)}</button>`).join("");
+
 function tarjeta(l) {
   const asunto = encodeURIComponent(`Consulta: ${l.s} — ${l.t.slice(0, 80)}`);
   const cuerpo = encodeURIComponent(`Hola,\n\nMe gustaría consultar este libro de la biblioteca:\n\n` +
@@ -280,20 +329,47 @@ function tarjeta(l) {
     ${pub ? `<p class="pub">${pub}</p>` : ""}
     <div class="donde"><span class="sig">${esc(l.s)}</span><span class="est">Estantería ${esc(l.e)}</span></div>
     <div class="pie">
-      ${l.mats.map((m, k) => `<button type="button" class="chip" data-materia="${esc(((l.g || [])[k] || [])[0] || "")}" title="Ver: ${esc(((l.g || [])[k] || [])[0] || "")}">${esc(m)}</button>`).join("")}
+      ${chips(l)}
+      <a class="prestamo" href="mailto:${CONTACTO}?subject=${asunto}&body=${cuerpo}">Solicitar consulta →</a>
+    </div>
+  </li>`;
+}
+
+function tarjetaRevista(r) {
+  const asunto = encodeURIComponent(`Consulta de revista: ${r.t.slice(0, 80)}`);
+  const cuerpo = encodeURIComponent(`Hola,\n\nMe gustaría consultar esta revista de la biblioteca:\n\n` +
+    `${r.t}${r.x ? ` (ISSN ${r.x})` : ""}\nEstantería: ${r.e}\n\nAño(s) / número(s) que me interesan:\n\n` +
+    `Nombre:\nCorreo / teléfono:\n\nGracias.`);
+  const pub = [r.p, r.c && `publicada ${r.c}`, r.x && `ISSN ${r.x}`].filter(Boolean).map(esc).join(" · ");
+  return `<li class="libro revista">
+    <h2>${esc(r.t)}</h2>
+    ${pub ? `<p class="pub">${pub}</p>` : ""}
+    ${r.f ? `<p class="fondos"><b>Años en la biblioteca:</b> ${esc(r.f)}</p>` : ""}
+    ${r.n ? `<p class="detalle">${esc(r.n)}</p>` : ""}
+    ${r.o ? `<p class="detalle">${esc(r.o)}</p>` : ""}
+    <div class="donde"><span class="tipo">Revista</span><span class="est">Estantería<br>${r.e.split(";").map(x => esc(x.trim())).join("<br>")}</span></div>
+    <div class="pie">
+      ${chips(r)}
       <a class="prestamo" href="mailto:${CONTACTO}?subject=${asunto}&body=${cuerpo}">Solicitar consulta →</a>
     </div>
   </li>`;
 }
 
 function pintar() {
-  const res = filtrar().sort(ORDENES[estado.orden]);
+  const esRev = estado.vista === "revistas";
+  const todos = coleccion();
+  const res = filtrar().sort(esRev ? cmpTexto("t") : ORDENES[estado.orden]);
   const vista = res.slice(0, estado.mostrados);
-  $("lista").innerHTML = vista.length ? vista.map(tarjeta).join("") :
-    `<li class="vacio">Ningún libro coincide con la búsqueda.<br><button class="limpiar" type="button" onclick="limpiar()">Quitar filtros y búsqueda</button></li>`;
-  $("resumen").innerHTML = res.length === libros.length
-    ? `<b>${libros.length}</b> libros en el catálogo`
-    : `<b>${res.length}</b> de ${libros.length} libros`;
+  const [uno, varios] = esRev ? ["revista", "revistas"] : ["libro", "libros"];
+  $("lista").innerHTML = vista.length ? vista.map(esRev ? tarjetaRevista : tarjeta).join("") :
+    `<li class="vacio">Ninguna ${esRev ? "revista" : "obra"} coincide con la búsqueda.<br><button class="limpiar" type="button" onclick="limpiar()">Quitar filtros y búsqueda</button></li>`;
+  // Si la búsqueda también encuentra algo en la otra pestaña, avisar con un enlace.
+  const otra = esRev ? "libros" : "revistas";
+  const nOtra = estado.q || estado.materia || estado.desde != null || estado.hasta != null ? filtrar(otra).length : 0;
+  $("resumen").innerHTML = (res.length === todos.length
+    ? `<b>${todos.length}</b> ${todos.length === 1 ? uno : varios} en el catálogo`
+    : `<b>${res.length}</b> de ${plural(todos.length, uno, varios)}`) +
+    (nOtra ? ` · <a href="#" data-ir="${otra}">también ${plural(nOtra, esRev ? "libro" : "revista", otra)}</a>` : "");
   $("mas").hidden = res.length <= estado.mostrados;
   $("mas").textContent = `Mostrar más (${res.length - vista.length} restantes)`;
   guardarURL();
@@ -302,6 +378,7 @@ function pintar() {
 // --- Estado en la URL (para compartir una búsqueda) ---
 function guardarURL() {
   const p = new URLSearchParams();
+  if (estado.vista !== "libros") p.set("ver", estado.vista);
   if (estado.q) p.set("q", estado.q);
   if (estado.area) p.set("area", estado.area);
   if (estado.materia) p.set("materia", estado.materia);
@@ -313,6 +390,7 @@ function guardarURL() {
 }
 function leerURL() {
   const p = new URLSearchParams(location.search);
+  estado.vista = p.get("ver") === "revistas" ? "revistas" : "libros";
   estado.q = p.get("q") || "";
   estado.area = p.get("area") || "";
   estado.materia = p.get("materia") || "";
@@ -320,20 +398,31 @@ function leerURL() {
   estado.hasta = p.has("hasta") ? +p.get("hasta") : null;
   estado.orden = ORDENES[p.get("orden")] ? p.get("orden") : "estante";
   $("q").value = estado.q;
-  $("materia").value = estado.materia;
   $("desde").value = estado.desde ?? "";
   $("hasta").value = estado.hasta ?? "";
   $("orden").value = estado.orden;
   marcarArea();
+  marcarVista();
 }
 function marcarArea() {
   document.querySelectorAll(".area").forEach(b => b.setAttribute("aria-pressed", b.dataset.area === estado.area));
+}
+function marcarVista() {
+  document.querySelectorAll(".vista").forEach(b => b.setAttribute("aria-selected", b.dataset.vista === estado.vista));
+  $("areas").hidden = $("campo-orden").hidden = estado.vista === "revistas";
+  llenarMaterias();
 }
 
 // --- Eventos ---
 const reiniciar = () => { estado.mostrados = POR_PAGINA; pintar(); };
 let t;
 $("q").addEventListener("input", e => { clearTimeout(t); t = setTimeout(() => { estado.q = e.target.value.trim(); reiniciar(); }, 150); });
+const irA = v => { if (v === estado.vista) return; estado.vista = v; marcarVista(); reiniciar(); };
+$("vistas").addEventListener("click", e => { const b = e.target.closest(".vista"); if (b) irA(b.dataset.vista); });
+$("resumen").addEventListener("click", e => {
+  const a = e.target.closest("[data-ir]"); if (!a) return;
+  e.preventDefault(); irA(a.dataset.ir);
+});
 $("areas").addEventListener("click", e => {
   const b = e.target.closest(".area"); if (!b) return;
   estado.area = b.dataset.area; marcarArea(); reiniciar();
