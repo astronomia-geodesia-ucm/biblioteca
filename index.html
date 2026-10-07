@@ -135,8 +135,23 @@
     font: inherit; font-size: 12.5px; background: var(--chip); color: var(--chip-texto);
     border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer;
   }
-  .prestamo { margin-left: auto; font-size: 14px; color: var(--enlace); font-weight: 500; text-decoration: none; }
+  .prestamo {
+    margin-left: auto; font: inherit; font-size: 14px; color: var(--enlace); font-weight: 500;
+    background: none; border: 0; padding: 0; cursor: pointer; text-align: left;
+  }
   .prestamo:hover { text-decoration: underline; }
+  .solicitud {
+    flex-basis: 100%; margin-top: 6px; padding: 10px 12px; border-radius: 8px;
+    background: var(--acento-suave); font-size: 14px;
+  }
+  .solicitud p { margin: 0 0 8px; overflow-wrap: anywhere; }
+  .opciones { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opciones a, .copiar {
+    font: inherit; font-size: 13.5px; color: var(--enlace); background: var(--tarjeta);
+    border: 1px solid var(--linea); border-radius: 999px; padding: 4px 12px; cursor: pointer; text-decoration: none;
+  }
+  .solicitud p .copiar { padding: 1px 10px; font-size: 12.5px; margin-left: 4px; }
+  .opciones a:hover, .copiar:hover { border-color: var(--enlace); }
   .vacio { text-align: center; padding: 40px 16px; color: var(--suave); }
   .mas {
     display: block; margin: 20px auto 0; font: inherit; font-weight: 500; cursor: pointer;
@@ -318,10 +333,26 @@ const ORDENES = {
 
 const chips = l => l.mats.map((m, k) => `<button type="button" class="chip" data-materia="${esc(((l.g || [])[k] || [])[0] || "")}" title="Ver: ${esc(((l.g || [])[k] || [])[0] || "")}">${esc(m)}</button>`).join("");
 
+// "Solicitar consulta": un mailto: solo no hace nada si el equipo no tiene programa de correo
+// configurado, así que se abre un panel con varias formas de enviar el mensaje.
+function solicitud(asunto, cuerpo) {
+  const a = encodeURIComponent(asunto), c = encodeURIComponent(cuerpo), to = encodeURIComponent(CONTACTO);
+  return `<button type="button" class="prestamo" aria-expanded="false">Solicitar consulta →</button>
+    <div class="solicitud" hidden data-asunto="${esc(asunto)}" data-cuerpo="${esc(cuerpo)}">
+      <p>Envíe un correo a <b>${CONTACTO}</b> <button type="button" class="copiar" data-copiar="correo">Copiar dirección</button></p>
+      <div class="opciones">
+        <a href="mailto:${CONTACTO}?subject=${a}&body=${c}">Programa de correo</a>
+        <a href="https://outlook.office.com/mail/deeplink/compose?to=${to}&subject=${a}&body=${c}" target="_blank" rel="noopener">Outlook web</a>
+        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${a}&body=${c}" target="_blank" rel="noopener">Gmail</a>
+        <button type="button" class="copiar" data-copiar="mensaje">Copiar mensaje</button>
+      </div>
+    </div>`;
+}
+
 function tarjeta(l) {
-  const asunto = encodeURIComponent(`Consulta: ${l.s} — ${l.t.slice(0, 80)}`);
-  const cuerpo = encodeURIComponent(`Hola,\n\nMe gustaría consultar este libro de la biblioteca:\n\n` +
-    `${l.t}\n${l.a ? l.a + "\n" : ""}Signatura: ${l.s} (estantería ${l.e})\n\nNombre:\nCorreo / teléfono:\n\nGracias.`);
+  const asunto = `Consulta: ${l.s} — ${l.t.slice(0, 80)}`;
+  const cuerpo = `Hola,\n\nMe gustaría consultar este libro de la biblioteca:\n\n` +
+    `${l.t}\n${l.a ? l.a + "\n" : ""}Signatura: ${l.s} (estantería ${l.e})\n\nNombre:\nCorreo / teléfono:\n\nGracias.`;
   const pub = [l.p, l.y].filter(Boolean).map(esc).join(" · ");
   return `<li class="libro">
     <h2>${esc(l.t)}</h2>
@@ -330,16 +361,16 @@ function tarjeta(l) {
     <div class="donde"><span class="sig">${esc(l.s)}</span><span class="est">Estantería ${esc(l.e)}</span></div>
     <div class="pie">
       ${chips(l)}
-      <a class="prestamo" href="mailto:${CONTACTO}?subject=${asunto}&body=${cuerpo}">Solicitar consulta →</a>
+      ${solicitud(asunto, cuerpo)}
     </div>
   </li>`;
 }
 
 function tarjetaRevista(r) {
-  const asunto = encodeURIComponent(`Consulta de revista: ${r.t.slice(0, 80)}`);
-  const cuerpo = encodeURIComponent(`Hola,\n\nMe gustaría consultar esta revista de la biblioteca:\n\n` +
+  const asunto = `Consulta de revista: ${r.t.slice(0, 80)}`;
+  const cuerpo = `Hola,\n\nMe gustaría consultar esta revista de la biblioteca:\n\n` +
     `${r.t}${r.x ? ` (ISSN ${r.x})` : ""}\nEstantería: ${r.e}\n\nAño(s) / número(s) que me interesan:\n\n` +
-    `Nombre:\nCorreo / teléfono:\n\nGracias.`);
+    `Nombre:\nCorreo / teléfono:\n\nGracias.`;
   const pub = [r.p, r.c && `publicada ${r.c}`, r.x && `ISSN ${r.x}`].filter(Boolean).map(esc).join(" · ");
   return `<li class="libro revista">
     <h2>${esc(r.t)}</h2>
@@ -350,7 +381,7 @@ function tarjetaRevista(r) {
     <div class="donde"><span class="tipo">Revista</span><span class="est">Estantería<br>${r.e.split(";").map(x => esc(x.trim())).join("<br>")}</span></div>
     <div class="pie">
       ${chips(r)}
-      <a class="prestamo" href="mailto:${CONTACTO}?subject=${asunto}&body=${cuerpo}">Solicitar consulta →</a>
+      ${solicitud(asunto, cuerpo)}
     </div>
   </li>`;
 }
@@ -434,6 +465,22 @@ $("hasta").addEventListener("input", e => { estado.hasta = anio(e.target.value);
 $("orden").addEventListener("change", e => { estado.orden = e.target.value; reiniciar(); });
 $("mas").addEventListener("click", () => { estado.mostrados += POR_PAGINA; pintar(); });
 $("lista").addEventListener("click", e => {
+  const p = e.target.closest(".prestamo");
+  if (p) {
+    const panel = p.nextElementSibling, abrir = panel.hidden;
+    panel.hidden = !abrir; p.setAttribute("aria-expanded", abrir);
+    return;
+  }
+  const k = e.target.closest(".copiar");
+  if (k) {
+    const s = k.closest(".solicitud");
+    const texto = k.dataset.copiar === "correo" ? CONTACTO
+      : `Para: ${CONTACTO}\nAsunto: ${s.dataset.asunto}\n\n${s.dataset.cuerpo}`;
+    const antes = k.textContent;
+    navigator.clipboard.writeText(texto).then(() => k.textContent = "¡Copiado!", () => k.textContent = "No se pudo copiar")
+      .finally(() => setTimeout(() => k.textContent = antes, 1800));
+    return;
+  }
   const c = e.target.closest(".chip"); if (!c || !c.dataset.materia) return;
   estado.materia = c.dataset.materia; $("materia").value = estado.materia; reiniciar();
   window.scrollTo({ top: $("resumen").offsetTop - 20, behavior: "smooth" });
