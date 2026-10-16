@@ -113,13 +113,13 @@
   .pub { margin: 0; grid-column: 1; color: var(--suave); font-size: 14px; }
   .donde {
     grid-column: 2; grid-row: 1 / span 4; display: grid; gap: 2px; align-content: start; justify-items: center;
-    min-width: 150px; padding: 10px 14px; border-radius: 10px;
+    min-width: 130px; padding: 8px 12px; border-radius: 10px;
     background: var(--acento-suave); border-left: 4px solid var(--acento);
   }
   .etq { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
-  .est { font: 700 32px/1.1 system-ui, sans-serif; color: var(--texto); white-space: nowrap; }
+  .est { font: 700 24px/1.1 system-ui, sans-serif; color: var(--texto); white-space: nowrap; }
   .est small { font-size: 13px; font-weight: 400; color: var(--suave); margin-left: 4px; }
-  .revista .est { font-size: 24px; }
+  .revista .est { font-size: 19px; }
   .sig {
     font: 600 14px/1.2 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--suave);
     margin-top: 4px; max-width: 170px; overflow-wrap: anywhere; text-align: center;
@@ -146,7 +146,7 @@
   @media (max-width: 600px) {
     .libro { grid-template-columns: 1fr; }
     .donde { grid-column: 1; grid-row: auto; order: -1; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-self: start; min-width: 0; padding: 8px 12px; }
-    .est { font-size: 26px; }
+    .est { font-size: 20px; }
     .sig { margin-top: 0; }
   }
 </style>
