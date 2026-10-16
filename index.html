@@ -111,35 +111,24 @@
   .libro h2 { margin: 0; font: 600 18px/1.3 "Source Serif 4", Georgia, serif; grid-column: 1; }
   .autor { margin: 0; grid-column: 1; }
   .pub { margin: 0; grid-column: 1; color: var(--suave); font-size: 14px; }
-  .donde { grid-column: 2; grid-row: 1 / span 3; text-align: right; display: grid; gap: 4px; align-content: start; }
-  .sig {
-    font: 600 15px/1.2 ui-monospace, "Cascadia Mono", Consolas, monospace;
-    background: var(--acento-suave); color: var(--texto); border-left: 3px solid var(--acento);
-    padding: 5px 8px; border-radius: 4px; max-width: 190px; overflow-wrap: anywhere;
+  .donde {
+    grid-column: 2; grid-row: 1 / span 4; display: grid; gap: 2px; align-content: start; justify-items: center;
+    min-width: 150px; padding: 10px 14px; border-radius: 10px;
+    background: var(--acento-suave); border-left: 4px solid var(--acento);
   }
-  .est { font-size: 12px; color: var(--suave); }
+  .etq { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+  .est { font: 700 32px/1.1 system-ui, sans-serif; color: var(--texto); white-space: nowrap; }
+  .est small { font-size: 13px; font-weight: 400; color: var(--suave); margin-left: 4px; }
+  .revista .est { font-size: 24px; }
+  .sig {
+    font: 600 14px/1.2 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--suave);
+    margin-top: 4px; max-width: 170px; overflow-wrap: anywhere; text-align: center;
+  }
   .pie { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
   .chip {
     font: inherit; font-size: 12.5px; background: var(--chip); color: var(--chip-texto);
     border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer;
   }
-  .prestamo {
-    margin-left: auto; font: inherit; font-size: 14px; color: var(--enlace); font-weight: 500;
-    background: none; border: 0; padding: 0; cursor: pointer; text-align: left;
-  }
-  .prestamo:hover { text-decoration: underline; }
-  .solicitud {
-    flex-basis: 100%; margin-top: 6px; padding: 10px 12px; border-radius: 8px;
-    background: var(--acento-suave); font-size: 14px;
-  }
-  .solicitud p { margin: 0 0 8px; overflow-wrap: anywhere; }
-  .opciones { display: flex; flex-wrap: wrap; gap: 8px; }
-  .opciones a, .copiar {
-    font: inherit; font-size: 13.5px; color: var(--enlace); background: var(--tarjeta);
-    border: 1px solid var(--linea); border-radius: 999px; padding: 4px 12px; cursor: pointer; text-decoration: none;
-  }
-  .solicitud p .copiar { padding: 1px 10px; font-size: 12.5px; margin-left: 4px; }
-  .opciones a:hover, .copiar:hover { border-color: var(--enlace); }
   .vacio { text-align: center; padding: 40px 16px; color: var(--suave); }
   .mas {
     display: block; margin: 20px auto 0; font: inherit; font-weight: 500; cursor: pointer;
@@ -151,15 +140,14 @@
   .fondos { margin: 4px 0 0; grid-column: 1; }
   .fondos b { font-weight: 600; }
   .detalle { margin: 0; grid-column: 1; color: var(--suave); font-size: 13.5px; overflow-wrap: anywhere; }
-  .tipo { font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--acento); }
-  .revista .est { max-width: 190px; }
   footer { margin: 40px 0 0; padding: 20px 0 32px; border-top: 1px solid var(--linea); color: var(--suave); font-size: 13px; }
   footer a { color: var(--enlace); }
 
   @media (max-width: 600px) {
     .libro { grid-template-columns: 1fr; }
-    .donde { grid-column: 1; grid-row: auto; text-align: left; display: flex; gap: 10px; align-items: center; order: -1; }
-    .prestamo { margin-left: 0; width: 100%; padding-top: 4px; }
+    .donde { grid-column: 1; grid-row: auto; order: -1; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-self: start; min-width: 0; padding: 8px 12px; }
+    .est { font-size: 26px; }
+    .sig { margin-top: 0; }
   }
 </style>
 </head>
@@ -224,7 +212,6 @@
 <script src="datos.js?v=19f7b0ac30"></script>
 <script>
 // ---- Configuración ---------------------------------------------------------
-const CONTACTO = "secaig@ucm.es";          // correo para solicitar consultas
 const POR_PAGINA = 40;
 // ----------------------------------------------------------------------------
 
@@ -302,44 +289,26 @@ const ORDENES = {
 
 const chips = l => l.mats.map((m, k) => `<button type="button" class="chip" data-materia="${esc(((l.g || [])[k] || [])[0] || "")}" title="Ver: ${esc(((l.g || [])[k] || [])[0] || "")}">${esc(m)}</button>`).join("");
 
-// "Solicitar consulta": un mailto: solo no hace nada si el equipo no tiene programa de correo
-// configurado, así que se abre un panel con varias formas de enviar el mensaje.
-function solicitud(asunto, cuerpo) {
-  const a = encodeURIComponent(asunto), c = encodeURIComponent(cuerpo), to = encodeURIComponent(CONTACTO);
-  return `<button type="button" class="prestamo" aria-expanded="false">Solicitar consulta →</button>
-    <div class="solicitud" hidden data-asunto="${esc(asunto)}" data-cuerpo="${esc(cuerpo)}">
-      <p>Envíe un correo a <b>${CONTACTO}</b> <button type="button" class="copiar" data-copiar="correo">Copiar dirección</button></p>
-      <div class="opciones">
-        <a href="mailto:${CONTACTO}?subject=${a}&body=${c}">Programa de correo</a>
-        <a href="https://outlook.office.com/mail/deeplink/compose?to=${to}&subject=${a}&body=${c}" target="_blank" rel="noopener">Outlook web</a>
-        <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${to}&su=${a}&body=${c}" target="_blank" rel="noopener">Gmail</a>
-        <button type="button" class="copiar" data-copiar="mensaje">Copiar mensaje</button>
-      </div>
-    </div>`;
-}
-
 function tarjeta(l) {
-  const asunto = `Consulta: ${l.s} — ${l.t.slice(0, 80)}`;
-  const cuerpo = `Hola,\n\nMe gustaría consultar este libro de la biblioteca:\n\n` +
-    `${l.t}\n${l.a ? l.a + "\n" : ""}Signatura: ${l.s} (estantería ${l.e})\n\nNombre:\nCorreo / teléfono:\n\nGracias.`;
   const pub = [l.p, l.y].filter(Boolean).map(esc).join(" · ");
   return `<li class="libro">
     <h2>${esc(l.t)}</h2>
     ${l.a ? `<p class="autor">${esc(l.a)}</p>` : ""}
     ${pub ? `<p class="pub">${pub}</p>` : ""}
-    <div class="donde"><span class="sig">${esc(l.s)}</span><span class="est">Estantería ${esc(l.e)}</span></div>
+    <div class="donde"><span class="etq">Estantería</span><span class="est">${esc(l.e)}</span><span class="sig">${esc(l.s)}</span></div>
     <div class="pie">
       ${chips(l)}
-      ${solicitud(asunto, cuerpo)}
     </div>
   </li>`;
 }
 
+// 'P3-1 (1925-1966)' -> el estante en grande y los años en pequeño.
+const estRevista = x => {
+  const m = /^(\S+)\s*(.*)$/.exec(x.trim());
+  return `<span class="est">${esc(m[1])}${m[2] ? `<small>${esc(m[2])}</small>` : ""}</span>`;
+};
+
 function tarjetaRevista(r) {
-  const asunto = `Consulta de revista: ${r.t.slice(0, 80)}`;
-  const cuerpo = `Hola,\n\nMe gustaría consultar esta revista de la biblioteca:\n\n` +
-    `${r.t}${r.x ? ` (ISSN ${r.x})` : ""}\nEstantería: ${r.e}\n\nAño(s) / número(s) que me interesan:\n\n` +
-    `Nombre:\nCorreo / teléfono:\n\nGracias.`;
   const pub = [r.p, r.c && `publicada ${r.c}`, r.x && `ISSN ${r.x}`].filter(Boolean).map(esc).join(" · ");
   return `<li class="libro revista">
     <h2>${esc(r.t)}</h2>
@@ -347,10 +316,9 @@ function tarjetaRevista(r) {
     ${r.f ? `<p class="fondos"><b>Años en la biblioteca:</b> ${esc(r.f)}</p>` : ""}
     ${r.n ? `<p class="detalle">${esc(r.n)}</p>` : ""}
     ${r.o ? `<p class="detalle">${esc(r.o)}</p>` : ""}
-    <div class="donde"><span class="tipo">Revista</span><span class="est">Estantería<br>${r.e.split(";").map(x => esc(x.trim())).join("<br>")}</span></div>
+    <div class="donde"><span class="etq">Estantería</span>${r.e.split(";").map(estRevista).join("")}</div>
     <div class="pie">
       ${chips(r)}
-      ${solicitud(asunto, cuerpo)}
     </div>
   </li>`;
 }
@@ -424,22 +392,6 @@ $("hasta").addEventListener("input", e => { estado.hasta = anio(e.target.value);
 $("orden").addEventListener("change", e => { estado.orden = e.target.value; reiniciar(); });
 $("mas").addEventListener("click", () => { estado.mostrados += POR_PAGINA; pintar(); });
 $("lista").addEventListener("click", e => {
-  const p = e.target.closest(".prestamo");
-  if (p) {
-    const panel = p.nextElementSibling, abrir = panel.hidden;
-    panel.hidden = !abrir; p.setAttribute("aria-expanded", abrir);
-    return;
-  }
-  const k = e.target.closest(".copiar");
-  if (k) {
-    const s = k.closest(".solicitud");
-    const texto = k.dataset.copiar === "correo" ? CONTACTO
-      : `Para: ${CONTACTO}\nAsunto: ${s.dataset.asunto}\n\n${s.dataset.cuerpo}`;
-    const antes = k.textContent;
-    navigator.clipboard.writeText(texto).then(() => k.textContent = "¡Copiado!", () => k.textContent = "No se pudo copiar")
-      .finally(() => setTimeout(() => k.textContent = antes, 1800));
-    return;
-  }
   const c = e.target.closest(".chip"); if (!c || !c.dataset.materia) return;
   estado.materia = c.dataset.materia; $("materia").value = estado.materia; reiniciar();
   window.scrollTo({ top: $("resumen").offsetTop - 20, behavior: "smooth" });
