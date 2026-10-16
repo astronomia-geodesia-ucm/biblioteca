@@ -85,18 +85,6 @@
 
   /* Filtros */
   .filtros { margin: 16px 0 8px; display: grid; gap: 12px; }
-  .areas { display: flex; flex-wrap: wrap; gap: 8px; }
-  .area {
-    border: 1px solid var(--linea); background: var(--tarjeta); color: var(--texto);
-    padding: 6px 12px; border-radius: 999px; font: inherit; font-size: 14px; cursor: pointer;
-  }
-  .area span { color: var(--suave); font-size: 12px; margin-left: 4px; }
-  .area[aria-pressed="true"] { background: var(--cabecera); color: #fff; border-color: var(--cabecera); }
-  .area[aria-pressed="true"] span { color: #ffffffb0; }
-  @media (prefers-color-scheme: dark) {
-    .area[aria-pressed="true"] { background: var(--acento); color: #1a1405; border-color: var(--acento); }
-    .area[aria-pressed="true"] span { color: #1a1405b0; }
-  }
   .fila { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; }
   .campo { display: grid; gap: 4px; font-size: 13px; color: var(--suave); }
   .campo select, .campo input {
@@ -196,7 +184,6 @@
     <button type="button" class="vista" role="tab" data-vista="revistas" aria-selected="false">Revistas<span id="n-revistas"></span></button>
   </div>
   <section class="filtros" aria-label="Filtros">
-    <div class="areas" id="areas" role="group" aria-label="Área"></div>
     <div class="fila">
       <label class="campo">Materia
         <select id="materia"><option value="">Todas</option></select>
@@ -239,15 +226,6 @@
 // ---- Configuración ---------------------------------------------------------
 const CONTACTO = "secaig@ucm.es";          // correo para solicitar consultas
 const POR_PAGINA = 40;
-// Áreas según la signatura (primer número, o 'T-').
-const AREAS = [
-  ["1", "Astronomía", s => /^1\./.test(s)],
-  ["2", "Geodesia y Geofísica", s => /^2\./.test(s)],
-  ["3", "Informática", s => /^3\./.test(s)],
-  ["4", "Matemáticas y Física", s => /^4\./.test(s)],
-  ["0", "Obras de referencia", s => /^0\./.test(s)],
-  ["T", "Fondo UCM (serie T)", s => /^T-/.test(s)],
-];
 // ----------------------------------------------------------------------------
 
 const $ = id => document.getElementById(id);
@@ -261,7 +239,6 @@ const libros = window.CATALOGO.libros.map((l, i) => ({
   ...l,
   i,
   n: anioNum(l.y),
-  area: (AREAS.find(a => a[2](l.s)) || [""])[0],
   mats: materias(l.m),
   grupos: new Set((l.g || []).flat()),
   busca: norm([l.s, l.e, l.a, l.t, l.p, l.y, l.m].join(" ")),
@@ -278,15 +255,9 @@ const revistas = (window.CATALOGO.revistas || []).map((r, i) => ({
 const coleccion = (v = estado.vista) => v === "revistas" ? revistas : libros;
 const plural = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
 
-const estado = { vista: "libros", q: "", area: "", materia: "", desde: null, hasta: null, orden: "estante", mostrados: POR_PAGINA };
+const estado = { vista: "libros", q: "", materia: "", desde: null, hasta: null, orden: "estante", mostrados: POR_PAGINA };
 
 // --- Construir filtros ---
-function contar(f) { return libros.filter(f).length; }
-$("areas").innerHTML = [["", "Todas", () => true], ...AREAS]
-  .map(([k, nombre, f]) => {
-    const n = contar(l => f(l.s));
-    return n ? `<button type="button" class="area" data-area="${k}" aria-pressed="${k === ""}">${nombre}<span>${n}</span></button>` : "";
-  }).join("");
 $("n-libros").textContent = libros.length;
 $("n-revistas").textContent = revistas.length;
 
@@ -314,9 +285,7 @@ const enAnios = (l, v) => v === "revistas"
 
 function filtrar(v = estado.vista) {
   const palabras = norm(estado.q).split(/\s+/).filter(Boolean);
-  const porArea = v === "libros" && estado.area;
   return coleccion(v).filter(l =>
-    (!porArea || l.area === estado.area) &&
     (!estado.materia || l.grupos.has(estado.materia)) &&
     enAnios(l, v) &&
     palabras.every(p => l.busca.includes(p)));
@@ -411,7 +380,6 @@ function guardarURL() {
   const p = new URLSearchParams();
   if (estado.vista !== "libros") p.set("ver", estado.vista);
   if (estado.q) p.set("q", estado.q);
-  if (estado.area) p.set("area", estado.area);
   if (estado.materia) p.set("materia", estado.materia);
   if (estado.desde != null) p.set("desde", estado.desde);
   if (estado.hasta != null) p.set("hasta", estado.hasta);
@@ -423,7 +391,6 @@ function leerURL() {
   const p = new URLSearchParams(location.search);
   estado.vista = p.get("ver") === "revistas" ? "revistas" : "libros";
   estado.q = p.get("q") || "";
-  estado.area = p.get("area") || "";
   estado.materia = p.get("materia") || "";
   estado.desde = p.has("desde") ? +p.get("desde") : null;
   estado.hasta = p.has("hasta") ? +p.get("hasta") : null;
@@ -432,15 +399,11 @@ function leerURL() {
   $("desde").value = estado.desde ?? "";
   $("hasta").value = estado.hasta ?? "";
   $("orden").value = estado.orden;
-  marcarArea();
   marcarVista();
-}
-function marcarArea() {
-  document.querySelectorAll(".area").forEach(b => b.setAttribute("aria-pressed", b.dataset.area === estado.area));
 }
 function marcarVista() {
   document.querySelectorAll(".vista").forEach(b => b.setAttribute("aria-selected", b.dataset.vista === estado.vista));
-  $("areas").hidden = $("campo-orden").hidden = estado.vista === "revistas";
+  $("campo-orden").hidden = estado.vista === "revistas";
   llenarMaterias();
 }
 
@@ -453,10 +416,6 @@ $("vistas").addEventListener("click", e => { const b = e.target.closest(".vista"
 $("resumen").addEventListener("click", e => {
   const a = e.target.closest("[data-ir]"); if (!a) return;
   e.preventDefault(); irA(a.dataset.ir);
-});
-$("areas").addEventListener("click", e => {
-  const b = e.target.closest(".area"); if (!b) return;
-  estado.area = b.dataset.area; marcarArea(); reiniciar();
 });
 $("materia").addEventListener("change", e => { estado.materia = e.target.value; reiniciar(); });
 const anio = v => v === "" ? null : +v;
@@ -486,9 +445,9 @@ $("lista").addEventListener("click", e => {
   window.scrollTo({ top: $("resumen").offsetTop - 20, behavior: "smooth" });
 });
 function limpiar() {
-  Object.assign(estado, { q: "", area: "", materia: "", desde: null, hasta: null, orden: "estante" });
+  Object.assign(estado, { q: "", materia: "", desde: null, hasta: null, orden: "estante" });
   $("q").value = ""; $("materia").value = ""; $("desde").value = ""; $("hasta").value = ""; $("orden").value = "estante";
-  marcarArea(); reiniciar();
+  reiniciar();
 }
 $("limpiar").addEventListener("click", limpiar);
 
