@@ -201,7 +201,6 @@
 1.436,B3,Jornadas Científicas 250 Años de Astronomía en España (2003),Jornadas Científicas 250 años de Astronomía en España,[San Fernando] : Centro de Ayudas a la Enseñanza de la Armada,2003,Astronomía - España - Historia; Astronomía - Congresos
 1.437,B3,"Gómez de Castro, Ana I. ; Verdugo, Eva (eds.)",El proyecto Observatorio Espacial Mundial Ultravioleta - España = The World Space Observatory Ultraviolet (WSO/UV) project - Spain,[Madrid] : Editorial Complutense,2005,Astronomía ultravioleta; Observatorios espaciales
 1.438,B3,"Gómez de Castro, Ana I. ; Wamsteker, Willem (eds.)",Fundamental questions in astrophysics : guidelines for future UV observatories,[Dordrecht] : Springer,2006,Astrofísica; Astronomía ultravioleta; Observatorios espaciales
-2.44,C1,"Bruins, G. J. (ed.)","Standard base ""Loenermark"" : report on the results of the measurements performed by T. J. Kukkamäki and T. Honkasalo of the Finnish Geodetic Institute",Delft : Rijkscommissie voor Geodesie,1964,Bases geodésicas - Medición; Distanciometría electrónica
 2.58,C1,"Domínguez García-Tejero, Francisco",Topografía general y aplicada. Quinta edición,Madrid : Editorial Dossat,1968,Topografía
 2.59,C1,"Miguel, Luis de",Geomagnetismo,Madrid : Instituto Geográfico Nacional,1974,Geomagnetismo
 2.60,C1,"Miguel, Luis de",Geomagnetismo,Madrid : Instituto Geográfico Nacional,1974,Geomagnetismo
@@ -571,6 +570,7 @@ QSD-65,H3,"Rosas, Antonio",Los primeros homininos : paleontología humana,Madrid
 2.41,K1,International Symposium on the Use of Artificial Satellites for Geodesy (1st : 1962 : Washington),Proceedings of the First International Symposium on the Use of Artificial Satellites for Geodesy,Amsterdam : North-Holland Publishing Co.,1963,Satélites geodésicos
 2.42,K1,"Vignal, Jean",Identité des corrections de pesanteur appliquées aux altitudes dans les pays de l'Europe de l'Est et en France,Copenhague : reproduit par Robert Anthonsen,1962,Altitud - países del Este ; Altitud - Francia
 2.43,K1,Symposium Réseau géodésique européen par observation de satellites (1964 : Paris),"Réseau géodésique européen par observation de satellites, Symposium de Paris, 14-16 décembre, 1964",Paris : C.N.E.S. et I.G.N.,1965,Redes geodésicas ; Observación de satélites artificiales
+2.44,K1,"Bruins, G. J. (ed.)","Standard base ""Loenermark"" : report on the results of the measurements performed by T. J. Kukkamäki and T. Honkasalo of the Finnish Geodetic Institute",Delft : Rijkscommissie voor Geodesie,1964,Bases geodésicas - Medición; Distanciometría electrónica
 2.45,K1,"Simonsen, Ove",Global aspect of the astronomical correction for levelling of high precision when considering the definition of levelling datum,Copenhagen : Danish Geodetic Institute,1965,Nivelación astronómica
 2.46,K1,"Simonsen, Ove",Global aspect of the astronomical correction for levelling of high precision when considering the definition of levelling datum,Copenhagen : Danish Geodetic Institute,1965,Nivelación astronómica
 2.47,K1,"Simonsen, Ove",Global aspect of the astronomical correction for levelling of high precision when considering the definition of levelling datum,Copenhagen : Danish Geodetic Institute,1965,Nivelación astronómica
@@ -581,6 +581,14 @@ QSD-65,H3,"Rosas, Antonio",Los primeros homininos : paleontología humana,Madrid
 2.53,K1,Colloque International Les Méthodes dynamiques de géodésie par satellites (1967 : Paris),"Les Methodes dynamiques de geodesie par satellites : Colloque International Les Methodes…, Paris 22-25 mai 1967",Paris : CNES,1967,Geodesia por satélites
 2.54,K1,"García Cogollor, Ángel",Introducción al estudio gravimétrico de Fernando Poo,Madrid : Instituto Geográfico y Catastral,1967,Gravimetría - Guinea Ecuatorial
 2.55,K1,Defense Mapping Agency (Estados Unidos),Department of defense world geodetic system 1984 : its definition and relationships with local geodetic systems. 2nd ed. ; reimp. 1993,"[Fairfax, VA] : Defende Mapping Agency",1991,Sistemas de referencia geodésicos; WGS 84
+"5.13 (vols. a, b, c)",K2,"Neugebauer, O.",A History of Ancient Mathematical Astronomy,Berlin [etc.] : Springer-Verlag,1975,Astronomía matemática - Historia
+5.14,K2,"[Todhunter, Isaac]",A History of the Mathematical Theories of Attraction and the Figure of the Earth : from the time of Newton to that of Laplace,New York : Dover Publications,1962,Tierra - Figura - Historia; Gravitación - Historia
+5.15,K2,"Menéndez Pelayo, Marcelino",La ciencia española. I,"Santander : Aldus, S.A. de Artes Gráficas",1953,Ciencia - España - Historia
+5.16,K2,"Menéndez Pelayo, Marcelino",La ciencia española. II,"Santander : Aldus, S.A. de Artes Gráficas",1953,Ciencia - España - Historia
+5.17,K2,"Menéndez Pelayo, Marcelino",La ciencia española. III,"Santander : Aldus, S.A. de Artes Gráficas",1954,Ciencia - España - Historia
+5.18,K2,"Kearney, Hugh","Orígenes de la ciencia moderna, 1500-1700",Madrid : Ediciones Guadarrama,1970,Ciencia - Historia - Siglos XVI-XVII
+5.21,K2,"López Piñero, José María",La introducción de la ciencia moderna en España,"Esplugues de Llobregat, Barcelona : Ediciones Ariel",1969,Ciencia - España - Historia
+5.22,K2,"Outerelo Domínguez, Enrique",Evolución histórica de la Licenciatura en Matemáticas (Exactas) en la Universidad Central,"[Madrid] : Facultad de Ciencias Matemáticas, Universidad Complutense de Madrid",2009,Universidad Complutense de Madrid - Historia; Matemáticas - Enseñanza - Historia
 1.1.44,P2-2,IAU General Assembly (13ª. 1967. Praga),Highlights of astronomy : as presented at the XIIIth General Assembly of the I.A.U. 1967,Dordrecht-Holland : D. Reidel Publishing Company,1968,Astronomía - Congresos; Unión Astronómica Internacional - Asambleas
 1.1.45,P2-2,IAU General Assembly (13ª. 1967. Praga),Highlights of astronomy : as presented at the XIIIth General Assembly of the I.A.U. 1967,Dordrecht-Holland : D. Reidel Publishing Company,1968,Astronomía - Congresos; Unión Astronómica Internacional - Asambleas
 1.1.46,P2-2,IAU General Assembly (14ª. 1970. Brighton),Highlights of astronomy : as presented at the XIV General Assembly of the IAU,Dordrecht : D. Reidel,1971,Astronomía - Congresos; Unión Astronómica Internacional - Asambleas
