@@ -5,158 +5,172 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Catálogo de la Biblioteca · Astronomía y Geodesia UCM</title>
 <meta name="description" content="Catálogo de la biblioteca de la Sección Departamental de Astronomía y Geodesia (UCM). Libros disponibles para consulta.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script>
+  // Modo claro por defecto (como el blog); el oscuro solo si el visitante lo eligió con el botón.
+  try { if (localStorage.getItem("tema") === "oscuro") document.documentElement.dataset.theme = "dark"; } catch (e) {}
+</script>
 <style>
+  /* Estética del blog de la Sección (tema Twenty Ten de WordPress): blanco, negro, Georgia, enlaces azules. */
   :root {
-    --fondo: #f6f5f1;
+    --pagina: #f1f1f1;
+    --fondo: #ffffff;
     --tarjeta: #ffffff;
-    --texto: #1d2230;
-    --suave: #5b6275;
-    --linea: #e2e0d8;
-    --cabecera: #0f1b33;
-    --cabecera-texto: #eef1f8;
-    --acento: #c08a1e;
-    --acento-suave: #f5ecd7;
-    --enlace: #1f4f9c;
-    --chip: #eef2f9;
-    --chip-texto: #23407a;
-    --sombra: 0 1px 2px rgba(15, 27, 51, .06), 0 2px 8px rgba(15, 27, 51, .05);
+    --texto: #111111;
+    --suave: #555555;
+    --linea: #dddddd;
+    --raya: #000000;
+    --enlace: #0066cc;
+    --caja: #f3f3f3;
+    --chip: #f1f1f1;
+    --chip-texto: #222222;
+    --input: #ffffff;
+    color-scheme: light;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --fondo: #0e1320;
-      --tarjeta: #161d2e;
-      --texto: #e6e9f2;
-      --suave: #9aa3b8;
-      --linea: #273149;
-      --cabecera: #0a0f1a;
-      --cabecera-texto: #eef1f8;
-      --acento: #e0b04a;
-      --acento-suave: #2e2715;
-      --enlace: #8fb4ff;
-      --chip: #1f2a44;
-      --chip-texto: #b9cdf7;
-      --sombra: none;
-    }
+  :root[data-theme="dark"] {
+    --pagina: #0b0e14;
+    --fondo: #141821;
+    --tarjeta: #1a1f2a;
+    --texto: #e8e8e8;
+    --suave: #a3a8b3;
+    --linea: #2c3240;
+    --raya: #e8e8e8;
+    --enlace: #8fb4ff;
+    --caja: #232937;
+    --chip: #232937;
+    --chip-texto: #d8dce4;
+    --input: #0f1218;
+    color-scheme: dark;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--fondo);
+    background: var(--pagina);
     color: var(--texto);
-    font: 15px/1.5 Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 16px/1.55 Georgia, "Bitstream Charter", "Times New Roman", serif;
   }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+  .hoja { max-width: 980px; margin: 0 auto; background: var(--fondo); min-height: 100vh; }
+  .wrap { padding: 0 28px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
 
   /* Cabecera */
-  header {
-    background: var(--cabecera);
-    color: var(--cabecera-texto);
-    padding: 36px 0 28px;
-    background-image: radial-gradient(1px 1px at 12% 30%, #fff8, transparent),
-                      radial-gradient(1px 1px at 72% 18%, #fff6, transparent),
-                      radial-gradient(1.5px 1.5px at 85% 62%, #fff7, transparent),
-                      radial-gradient(1px 1px at 40% 75%, #fff5, transparent),
-                      radial-gradient(1px 1px at 58% 40%, #fff4, transparent);
+  header { padding: 30px 0 0; }
+  .titulo-fila { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+  .sup { margin: 0 0 4px; font: bold 15px/1.3 Arial, Helvetica, sans-serif; }
+  h1 { margin: 0 0 14px; font: bold clamp(26px, 5vw, 34px)/1.15 Arial, Helvetica, sans-serif; }
+  .tema {
+    flex: none; font: 13px Arial, Helvetica, sans-serif; color: var(--texto); background: var(--fondo);
+    border: 1px solid var(--linea); border-radius: 4px; padding: 6px 10px; cursor: pointer;
   }
-  .sup { margin: 0 0 6px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; opacity: .75; }
-  h1 { margin: 0 0 8px; font: 600 clamp(26px, 5vw, 38px)/1.15 "Source Serif 4", Georgia, serif; }
-  .intro { margin: 0 0 20px; max-width: 640px; opacity: .85; }
-  .intro a { color: inherit; font-weight: 600; text-decoration: underline; text-decoration-color: var(--acento); text-underline-offset: 3px; }
+  .tema:hover { border-color: var(--texto); }
+  .raya { border: 0; border-top: 4px solid var(--raya); margin: 0 0 18px; }
+  .intro { margin: 0 0 18px; max-width: 700px; }
+  a { color: var(--enlace); }
+  .intro a { font-weight: bold; }
   .buscador { position: relative; }
   .buscador input {
-    width: 100%; padding: 14px 16px 14px 46px; border: 0; border-radius: 10px;
-    font: inherit; font-size: 17px; background: #fff; color: #1d2230;
+    width: 100%; padding: 12px 14px 12px 44px; border: 1px solid #999; border-radius: 3px;
+    font: inherit; font-size: 17px; background: var(--input); color: var(--texto);
   }
-  .buscador input:focus { outline: 3px solid var(--acento); }
-  .buscador svg { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #7a8196; }
+  .buscador input:focus { outline: 2px solid var(--enlace); outline-offset: 1px; }
+  .buscador svg { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--suave); }
 
   /* Libros / Revistas */
   .vistas { display: flex; gap: 4px; margin: 22px 0 0; border-bottom: 1px solid var(--linea); }
   .vista {
-    font: inherit; font-weight: 600; font-size: 15px; background: none; border: 0; cursor: pointer;
+    font: bold 15px Arial, Helvetica, sans-serif; background: none; border: 0; cursor: pointer;
     color: var(--suave); padding: 8px 14px 10px; border-bottom: 3px solid transparent; margin-bottom: -1px;
   }
-  .vista span { font-weight: 400; font-size: 13px; margin-left: 4px; }
-  .vista[aria-selected="true"] { color: var(--texto); border-bottom-color: var(--acento); }
+  .vista span { font-weight: normal; font-size: 13px; margin-left: 4px; }
+  .vista[aria-selected="true"] { color: var(--texto); border-bottom-color: var(--raya); }
   [hidden] { display: none !important; }
 
   /* Filtros */
   .filtros { margin: 16px 0 8px; display: grid; gap: 12px; }
   .fila { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: end; }
-  .campo { display: grid; gap: 4px; font-size: 13px; color: var(--suave); }
+  .campo { display: grid; gap: 4px; font: 13px Arial, Helvetica, sans-serif; color: var(--suave); }
   .campo select, .campo input {
-    font: inherit; font-size: 14px; color: var(--texto); background: var(--tarjeta);
-    border: 1px solid var(--linea); border-radius: 8px; padding: 7px 10px; min-width: 0;
+    font: 14px Arial, Helvetica, sans-serif; color: var(--texto); background: var(--input);
+    border: 1px solid #999; border-radius: 3px; padding: 6px 8px; min-width: 0;
   }
   .campo input { width: 92px; }
   .anios { display: flex; gap: 6px; align-items: center; }
   .limpiar {
-    font: inherit; font-size: 14px; background: none; border: 0; color: var(--enlace);
+    font: 14px Arial, Helvetica, sans-serif; background: none; border: 0; color: var(--enlace);
     cursor: pointer; padding: 8px 4px; text-decoration: underline;
   }
 
   /* Resultados */
-  .resumen { margin: 14px 0 12px; color: var(--suave); font-size: 14px; }
+  .resumen { margin: 14px 0 12px; color: var(--suave); font: 14px Arial, Helvetica, sans-serif; }
   .resumen b { color: var(--texto); }
-  .resumen a { color: var(--enlace); }
-  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+  ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
   .libro {
-    background: var(--tarjeta); border: 1px solid var(--linea); border-radius: 12px;
-    padding: 16px 18px; box-shadow: var(--sombra);
-    display: grid; grid-template-columns: 1fr auto; gap: 4px 16px;
+    background: var(--tarjeta); border-bottom: 1px solid var(--linea);
+    padding: 18px 0;
+    display: grid; grid-template-columns: 1fr auto; gap: 4px 20px;
   }
-  .libro h2 { margin: 0; font: 600 18px/1.3 "Source Serif 4", Georgia, serif; grid-column: 1; }
+  .libro:first-child { border-top: 1px solid var(--linea); }
+  .libro h2 { margin: 0; font: bold 18px/1.3 Georgia, "Times New Roman", serif; grid-column: 1; }
   .autor { margin: 0; grid-column: 1; }
-  .pub { margin: 0; grid-column: 1; color: var(--suave); font-size: 14px; }
+  .pub { margin: 0; grid-column: 1; color: var(--suave); font-size: 14.5px; }
   .donde {
-    grid-column: 2; grid-row: 1 / span 4; display: grid; gap: 2px; align-content: start; justify-items: center;
-    min-width: 130px; padding: 8px 12px; border-radius: 10px;
-    background: var(--acento-suave); border-left: 4px solid var(--acento);
+    /* Misma anchura en todos los libros y alto según el contenido: las fichas quedan alineadas. */
+    grid-column: 2; grid-row: 1 / span 4; align-self: start; display: grid; gap: 2px; justify-items: center;
+    width: 180px; padding: 8px 12px 10px; background: var(--caja); border: 1px solid var(--linea);
+    border-left: 4px solid var(--raya); font-family: Arial, Helvetica, sans-serif; text-align: center;
   }
-  .etq { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
-  .est { font: 700 24px/1.1 system-ui, sans-serif; color: var(--texto); white-space: nowrap; }
-  .est small { font-size: 13px; font-weight: 400; color: var(--suave); margin-left: 4px; }
-  .revista .est { font-size: 19px; }
+  .etq { font-size: 11px; font-weight: bold; letter-spacing: .08em; text-transform: uppercase; color: var(--suave); }
+  .est { font: bold 24px/1.1 Arial, Helvetica, sans-serif; color: var(--texto); white-space: nowrap; }
+  .est small { font-size: 13px; font-weight: normal; color: var(--suave); margin-left: 4px; }
+  .revista .est { font-size: 19px; margin-top: 2px; }
+  .revista .est small { display: block; margin: 1px 0 0; white-space: normal; }
   .sig {
-    font: 600 14px/1.2 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--suave);
+    font: bold 14px/1.2 Consolas, "Courier New", monospace; color: var(--suave);
     margin-top: 4px; max-width: 170px; overflow-wrap: anywhere; text-align: center;
   }
   .pie { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
   .chip {
-    font: inherit; font-size: 12.5px; background: var(--chip); color: var(--chip-texto);
-    border: 0; border-radius: 999px; padding: 3px 10px; cursor: pointer;
+    font: 12.5px Arial, Helvetica, sans-serif; background: var(--chip); color: var(--chip-texto);
+    border: 1px solid var(--linea); border-radius: 3px; padding: 3px 9px; cursor: pointer;
   }
+  .chip:hover { border-color: var(--texto); }
   .vacio { text-align: center; padding: 40px 16px; color: var(--suave); }
   .mas {
-    display: block; margin: 20px auto 0; font: inherit; font-weight: 500; cursor: pointer;
-    background: var(--tarjeta); color: var(--texto); border: 1px solid var(--linea);
-    border-radius: 999px; padding: 10px 22px;
+    display: block; margin: 24px auto 0; font: bold 14px Arial, Helvetica, sans-serif; cursor: pointer;
+    background: var(--fondo); color: var(--texto); border: 1px solid var(--texto);
+    border-radius: 3px; padding: 10px 22px;
   }
   .mas[hidden] { display: none; }
   .libro h2, .autor, .pub { overflow-wrap: anywhere; }
   .fondos { margin: 4px 0 0; grid-column: 1; }
-  .fondos b { font-weight: 600; }
-  .detalle { margin: 0; grid-column: 1; color: var(--suave); font-size: 13.5px; overflow-wrap: anywhere; }
-  footer { margin: 40px 0 0; padding: 20px 0 32px; border-top: 1px solid var(--linea); color: var(--suave); font-size: 13px; }
-  footer a { color: var(--enlace); }
+  .fondos b { font-weight: bold; }
+  .detalle { margin: 0; grid-column: 1; color: var(--suave); font-size: 14px; overflow-wrap: anywhere; }
+  footer { margin: 40px 0 0; padding: 0 0 32px; color: var(--suave); font: 13px Arial, Helvetica, sans-serif; }
+  footer .raya { margin-bottom: 14px; }
+  footer b { color: var(--texto); }
 
   @media (max-width: 600px) {
+    .titulo-fila { flex-direction: column-reverse; gap: 8px; }
+    .tema { align-self: flex-end; }
     .libro { grid-template-columns: 1fr; }
-    .donde { grid-column: 1; grid-row: auto; order: -1; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-self: start; min-width: 0; padding: 8px 12px; }
+    .donde { grid-column: 1; grid-row: auto; order: -1; display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; justify-self: start; width: auto; min-width: 0; padding: 8px 12px; text-align: left; }
+    .revista .est small { display: inline; margin-left: 4px; }
     .est { font-size: 20px; }
     .sig { margin-top: 0; }
   }
 </style>
 </head>
 <body>
-
+<div class="hoja">
 <header>
   <div class="wrap">
-    <p class="sup">Sección Departamental de Astronomía y Geodesia · UCM · Facultad de Matemáticas</p>
-    <h1>Catálogo de la Biblioteca</h1>
+    <div class="titulo-fila">
+      <div>
+        <p class="sup">Sección Departamental de Astronomía y Geodesia · UCM · Facultad de Matemáticas</p>
+        <h1>Catálogo de la Biblioteca</h1>
+      </div>
+      <button type="button" class="tema" id="tema" aria-pressed="false">☾ Modo oscuro</button>
+    </div>
+    <hr class="raya">
     <p class="intro">Busque por autor, título, editorial, año o materia. Todos los libros y revistas están
       disponibles para consulta. Si está interesado, escriba un correo a <a href="mailto:secaig@ucm.es">secaig@ucm.es</a>.</p>
     <div class="buscador">
@@ -203,11 +217,14 @@
 
 <footer>
   <div class="wrap">
+    <hr class="raya">
+    <b>Sección Departamental de Astronomía y Geodesia</b> ·
     <span id="actualizado"></span> ·
     <a href="catalogo.csv" download>Descargar el catálogo de libros (CSV)</a> ·
     <a href="revistas.csv" download>Descargar las revistas (CSV)</a>
   </div>
 </footer>
+</div>
 
 <script src="datos.js?v=19f7b0ac30"></script>
 <script>
@@ -402,6 +419,20 @@ function limpiar() {
   reiniciar();
 }
 $("limpiar").addEventListener("click", limpiar);
+
+// --- Modo claro / oscuro (se recuerda en este navegador) ---
+function marcarTema() {
+  const oscuro = document.documentElement.dataset.theme === "dark";
+  $("tema").textContent = oscuro ? "☀ Modo claro" : "☾ Modo oscuro";
+  $("tema").setAttribute("aria-pressed", oscuro);
+}
+$("tema").addEventListener("click", () => {
+  const oscuro = document.documentElement.dataset.theme !== "dark";
+  if (oscuro) document.documentElement.dataset.theme = "dark"; else delete document.documentElement.dataset.theme;
+  try { localStorage.setItem("tema", oscuro ? "oscuro" : "claro"); } catch (e) {}
+  marcarTema();
+});
+marcarTema();
 
 leerURL();
 pintar();
